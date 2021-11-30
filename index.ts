@@ -10,7 +10,7 @@ class MangaUnzipper {
         this.batchConvert(this.convertToArray(mangaPaths), outputPath)
     }
 
-    protected batchConvert(mangaPaths: string[], outputPath: string) {
+    private batchConvert(mangaPaths: string[], outputPath: string) {
         for (const mangaPath of mangaPaths) {
             this.convert(mangaPath, outputPath).catch(e => {
                 console.log(e)
@@ -18,7 +18,7 @@ class MangaUnzipper {
         }
     }
 
-    protected async convert(mangaPath: string, outputPath: string): Promise<boolean> {
+    private async convert(mangaPath: string, outputPath: string): Promise<boolean> {
         this.checkPath(mangaPath)
         const uuid = uid()
         await this.unzip(mangaPath, uuid)
@@ -29,7 +29,7 @@ class MangaUnzipper {
     }
 
 
-    protected async unzip(mangaPath: string, uuid: string) {
+    private async unzip(mangaPath: string, uuid: string) {
         if (path.extname(mangaPath) != '.zip') {
             throw `${mangaPath} is not a zip file`
         }
@@ -48,14 +48,14 @@ class MangaUnzipper {
         }
     }
 
-    protected checkPath(path: string) {
+    private checkPath(path: string) {
         if (!fs.existsSync(path)) {
             throw `file ${path} not exists`
         }
         return;
     }
 
-    protected getImages(folder: string) {
+    private getImages(folder: string) {
         if (!fs.existsSync(folder)) throw `folder ${folder} doesn't exist`
         if (!fs.statSync(folder).isDirectory()) throw `${folder} is not a folder`
         const allFiles = fs.readdirSync(folder).sort();
@@ -69,7 +69,7 @@ class MangaUnzipper {
         return images
     }
 
-    protected convertToArray(input: string | string[]) {
+    private convertToArray(input: string | string[]) {
         if (typeof input !== 'string') {
             if (!Array.isArray(input)) {
                 throw 'input can only be string or array'
@@ -78,14 +78,14 @@ class MangaUnzipper {
         return typeof input === 'string' ? [input] : input
     }
 
-    protected isImage(fileName: string) {
+    private isImage(fileName: string) {
         if (fileName.split('.').length < 2) {
             return false
         }
         return ['jpg', 'png', 'bmp', 'jpeg'].includes(fileName.split('.')[1])
     }
 
-    protected convertToPdf(images: string[], outputPath: string, fileName: string) {
+    private convertToPdf(images: string[], outputPath: string, fileName: string) {
         if (!fs.statSync(outputPath).isDirectory()) throw `output path ${outputPath} is not a folder`
         const doc = new PDFDocument({size: 'A4'});
         doc.pipe(fs.createWriteStream(`${outputPath}/${fileName}.pdf`));
